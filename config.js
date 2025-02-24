@@ -1,11 +1,14 @@
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID,
-    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
-};
-
-export default firebaseConfig;
+    apiKey: "AIzaSyDC0DP0xVxfJhvEBASLCVRppkxnxnYApRs",
+    authDomain: "face-lock-938c8.firebaseapp.com",
+    projectId: "face-lock-938c8",
+    storageBucket: "face-lock-938c8.firebasestorage.app",
+    messagingSenderId: "127248130618",
+    appId: "1:127248130618:web:277ca518b34cb8f4b58b03",
+    measurementId: "G-CPTCY84NNH"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+  
