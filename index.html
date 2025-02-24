@@ -35,13 +35,16 @@
         import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
         import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
     
+        // ✅ Initialize Firebase using config.js
         const firebaseApp = initializeApp(firebaseConfig);
         const db = getFirestore(firebaseApp);
         const auth = getAuth(firebaseApp);
-        
-        window.db = db;  
+    
+        // ✅ Attach them to the window (so other scripts can access them)
+        window.db = db;
         window.auth = auth;
     </script>
+    
     
 
     <script>
