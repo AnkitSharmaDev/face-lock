@@ -29,8 +29,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <!-- <script src="config.js"></script> -->
-    <script type="module">
-        import firebaseConfig from '/config.js';
+    <!-- <script type="module">
+        import firebaseConfig from './config.js';
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
         import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
@@ -43,17 +43,27 @@
         // ✅ Attach them to the window (so other scripts can access them)
         window.db = db;
         window.auth = auth;
-    </script>
+    </script> -->
     
     
 
     <script>
+        const firebaseConfig = {
+    apiKey: "AIzaSyDC0DP0xVxfJhvEBASLCVRppkxnxnYApRs",
+    authDomain: "face-lock-938c8.firebaseapp.com",
+    projectId: "face-lock-938c8",
+    storageBucket: "face-lock-938c8.firebasestorage.app",
+    messagingSenderId: "127248130618",
+    appId: "1:127248130618:web:277ca518b34cb8f4b58b03",
+    measurementId: "G-CPTCY84NNH"
+  };
+
        
  
          
         firebase.initializeApp(firebaseConfig);
-        // const db = firebase.firestore();
-        // const auth = firebase.auth();
+        const db = firebase.firestore();
+        const auth = firebase.auth();
 
          
         window.onload = function() {
