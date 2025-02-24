@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceLock</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        video { border: 2px solid #ccc; margin: 20px; border-radius: 20px 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>FaceLock Login</h1>
+    <video id="video" width="400" height="300" autoplay></video>
+    <br>
+    <button onclick="registerFace()">Register Face</button>
+    <button onclick="loginFace()">Login with Face</button>
+    <p id="status">Status: Ready</p>
+
+    <script type="module">
+        import firebaseConfig from './config.js';
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+       
+const firebaseConfig = {
+    apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID
+};
+         
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+         
+        window.onload = function() {
+            startVideo();
+            loadModels();  
+        };
+
+         
+        function startVideo() {
+            const video = document.getElementById('video');
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    console.log('Webcam started successfully');
+                })
+                .catch(err => console.error('Webcam error:', err));
+        }
+
+         
+        async function loadModels() {
+            try {
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
+                    faceapi.nets.faceLandmark68Net.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
+                    faceapi.nets.faceRecognitionNet.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights')
+                ]);
+                
+                document.getElementById('status').textContent = "Status: Models loaded, ready to use";
+            } catch (err) {
+               
+                document.getElementById('status').textContent = "Status: Failed to load models(Check your Internet connection)";
+            }
+        }
+
+         
+        async function registerFace() {
+            const video = document.getElementById('video');
+            const status = document.getElementById('status');
+            status.textContent = "Status: Detecting face...";
+
+            try {
+                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+
+                if (detections) {
+                    const descriptor = Array.from(detections.descriptor);   
+                    await db.collection('users').doc('test-user').set({ faceDescriptor: descriptor });
+                    status.textContent = "Status: Face registered!";
+                } else {
+                    status.textContent = "Status: No face detected.";
+                }
+            } catch (error) {
+                console.error('Register error:', error);
+                status.textContent = "Status: Error occurred - " + error.message;
+            }
+        }
+
+        
+        async function loginFace() {
+            const video = document.getElementById('video');
+            const status = document.getElementById('status');
+            status.textContent = "Status: Verifying face...";
+
+            try {
+                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+
+                if (detections) {
+                    const newDescriptor = Array.from(detections.descriptor);
+                    const doc = await db.collection('users').doc('test-user').get();
+                    if (!doc.exists) {
+                        status.textContent = "Status: No user registered yet.";
+                        return;
+                    }
+                    const storedDescriptor = doc.data().faceDescriptor;
+
+                    
+                    const distance = faceapi.euclideanDistance(newDescriptor, storedDescriptor);
+                    if (distance < 0.6) {  
+                        status.textContent = "Status: Login successful!";
+                    } else {
+                        status.textContent = "Status: Face not recognized.";
+                    }
+                } else {
+                    status.textContent = "Status: No face detected.";
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                status.textContent = "Status: Error occurred - " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
