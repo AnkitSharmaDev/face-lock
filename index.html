@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -28,22 +28,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <!-- <script src="config.js"></script> -->
-    <!-- <script type="module">
-        import firebaseConfig from './config.js';
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
     
-        // ✅ Initialize Firebase using config.js
-        const firebaseApp = initializeApp(firebaseConfig);
-        const db = getFirestore(firebaseApp);
-        const auth = getAuth(firebaseApp);
-    
-        // ✅ Attach them to the window (so other scripts can access them)
-        window.db = db;
-        window.auth = auth;
-    </script> -->
     
     
 
@@ -155,6 +140,137 @@
             } catch (error) {
                 console.error('Login error:', error);
                 status.textContent = "Status: Error occurred - " + error.message;
+            }
+        }
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+<!-- Major updation -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceLock</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        video { border: 2px solid #ccc; margin: 20px; border-radius: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>FaceLock Login</h1>
+    <video id="video" width="400" height="300" autoplay></video>
+    <br>
+    <button onclick="registerFace()">Register Face</button>
+    <button onclick="loginFace()">Login with Face</button>
+    <p id="status">Status: Initializing...</p>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <!-- Face-api.js -->
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDC0DP0xVxfJhvEBASLCVRppkxnxnYApRs",
+            authDomain: "face-lock-938c8.firebaseapp.com",
+            projectId: "face-lock-938c8",
+            storageBucket: "face-lock-938c8.appspot.com",
+            messagingSenderId: "127248130618",
+            appId: "1:127248130618:web:277ca518b34cb8f4b58b03",
+            measurementId: "G-CPTCY84NNH"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            startVideo();
+            loadModels();
+        });
+
+        function startVideo() {
+            const video = document.getElementById("video");
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => { video.srcObject = stream; })
+                .catch(err => console.error("Webcam error:", err));
+        }
+
+        async function loadModels() {
+            try {
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri("https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights"),
+                    faceapi.nets.faceLandmark68Net.loadFromUri("https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights"),
+                    faceapi.nets.faceRecognitionNet.loadFromUri("https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights")
+                ]);
+                document.getElementById("status").textContent = "Status: Models loaded successfully";
+            } catch (err) {
+                document.getElementById("status").textContent = "Status: Failed to load models (Check internet)";
+            }
+        }
+
+        async function registerFace() {
+            const video = document.getElementById("video");
+            const status = document.getElementById("status");
+            status.textContent = "Status: Detecting face...";
+
+            try {
+                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+
+                if (detections) {
+                    await db.collection("users").doc("test-user").set({
+                        faceDescriptor: Array.from(detections.descriptor)
+                    });
+                    status.textContent = "Status: Face registered successfully!";
+                } else {
+                    status.textContent = "Status: No face detected.";
+                }
+            } catch (error) {
+                status.textContent = "Status: Error - " + error.message;
+            }
+        }
+
+        async function loginFace() {
+            const video = document.getElementById("video");
+            const status = document.getElementById("status");
+            status.textContent = "Status: Verifying face...";
+
+            try {
+                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+
+                if (detections) {
+                    const newDescriptor = Array.from(detections.descriptor);
+                    const doc = await db.collection("users").doc("test-user").get();
+                    if (!doc.exists) {
+                        status.textContent = "Status: No registered user found.";
+                        return;
+                    }
+                    const storedDescriptor = doc.data().faceDescriptor;
+                    const distance = faceapi.euclideanDistance(newDescriptor, storedDescriptor);
+
+                    status.textContent = (distance < 0.6) ? "Status: Login successful!" : "Status: Face not recognized.";
+                } else {
+                    status.textContent = "Status: No face detected.";
+                }
+            } catch (error) {
+                status.textContent = "Status: Error - " + error.message;
             }
         }
     </script>
