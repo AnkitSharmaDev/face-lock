@@ -152,8 +152,7 @@
 
 
 <!-- Major updation -->
-
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -161,8 +160,8 @@
     <title>FaceLock</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        video { border: 2px solid #ccc; margin: 20px; border-radius: 20px; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 5px; }
+        video { border: 2px solid #ccc; margin: 20px; border-radius: 20px 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -171,103 +170,117 @@
     <br>
     <button onclick="registerFace()">Register Face</button>
     <button onclick="loginFace()">Login with Face</button>
-    <p id="status">Status: Initializing...</p>
+    <p id="status">Status: Ready</p>
+    <p id="welcome"></p>
 
-    <!-- Firebase SDKs -->
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    
-    <!-- Face-api.js -->
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDC0DP0xVxfJhvEBASLCVRppkxnxnYApRs",
             authDomain: "face-lock-938c8.firebaseapp.com",
             projectId: "face-lock-938c8",
-            storageBucket: "face-lock-938c8.appspot.com",
+            storageBucket: "face-lock-938c8.firebasestorage.app",
             messagingSenderId: "127248130618",
             appId: "1:127248130618:web:277ca518b34cb8f4b58b03",
             measurementId: "G-CPTCY84NNH"
         };
-        
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
 
-        document.addEventListener("DOMContentLoaded", () => {
+        window.onload = function() {
             startVideo();
-            loadModels();
-        });
+            loadModels();  
+        };
 
         function startVideo() {
-            const video = document.getElementById("video");
+            const video = document.getElementById('video');
             navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => { video.srcObject = stream; })
-                .catch(err => console.error("Webcam error:", err));
+                .then(stream => {
+                    video.srcObject = stream;
+                })
+                .catch(err => console.error('Webcam error:', err));
         }
 
         async function loadModels() {
-            try {
-                await Promise.all([
-                    faceapi.nets.tinyFaceDetector.loadFromUri("https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights"),
-                    faceapi.nets.faceLandmark68Net.loadFromUri("https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights"),
-                    faceapi.nets.faceRecognitionNet.loadFromUri("https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights")
-                ]);
-                document.getElementById("status").textContent = "Status: Models loaded successfully";
-            } catch (err) {
-                document.getElementById("status").textContent = "Status: Failed to load models (Check internet)";
-            }
+            await Promise.all([
+                faceapi.nets.tinyFaceDetector.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
+                faceapi.nets.faceLandmark68Net.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
+                faceapi.nets.faceRecognitionNet.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights')
+            ]);
+            document.getElementById('status').textContent = "Status: Models loaded, ready to use";
         }
 
         async function registerFace() {
-            const video = document.getElementById("video");
-            const status = document.getElementById("status");
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Please sign in first");
+                return;
+            }
+
+            const video = document.getElementById('video');
+            const status = document.getElementById('status');
             status.textContent = "Status: Detecting face...";
 
             try {
-                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
                     .withFaceLandmarks()
-                    .withFaceDescriptor();
-
-                if (detections) {
-                    await db.collection("users").doc("test-user").set({
-                        faceDescriptor: Array.from(detections.descriptor)
-                    });
-                    status.textContent = "Status: Face registered successfully!";
-                } else {
-                    status.textContent = "Status: No face detected.";
+                    .withFaceDescriptors();
+                
+                if (detections.length !== 1) {
+                    status.textContent = "Status: Please ensure only one face is visible";
+                    return;
                 }
+                
+                const descriptor = Array.from(detections[0].descriptor);
+                await db.collection('users').doc(user.uid).set({
+                    name: user.displayName || "User",
+                    faceDescriptor: descriptor
+                });
+                status.textContent = "Status: Face registered!";
             } catch (error) {
                 status.textContent = "Status: Error - " + error.message;
             }
         }
 
         async function loginFace() {
-            const video = document.getElementById("video");
-            const status = document.getElementById("status");
+            const video = document.getElementById('video');
+            const status = document.getElementById('status');
             status.textContent = "Status: Verifying face...";
 
             try {
-                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
                     .withFaceLandmarks()
-                    .withFaceDescriptor();
+                    .withFaceDescriptors();
 
-                if (detections) {
-                    const newDescriptor = Array.from(detections.descriptor);
-                    const doc = await db.collection("users").doc("test-user").get();
-                    if (!doc.exists) {
-                        status.textContent = "Status: No registered user found.";
-                        return;
-                    }
+                if (detections.length !== 1) {
+                    status.textContent = "Status: Please ensure only one face is visible";
+                    return;
+                }
+
+                const newDescriptor = Array.from(detections[0].descriptor);
+                
+                const userDocs = await db.collection('users').get();
+                let matchedUser = null;
+
+                userDocs.forEach(doc => {
                     const storedDescriptor = doc.data().faceDescriptor;
                     const distance = faceapi.euclideanDistance(newDescriptor, storedDescriptor);
+                    if (distance < 0.6) {
+                        matchedUser = doc.data().name;
+                    }
+                });
 
-                    status.textContent = (distance < 0.6) ? "Status: Login successful!" : "Status: Face not recognized.";
+                if (matchedUser) {
+                    status.textContent = "Status: Login successful!";
+                    document.getElementById('welcome').textContent = "Welcome, " + matchedUser + "!";
                 } else {
-                    status.textContent = "Status: No face detected.";
+                    status.textContent = "Status: Face not recognized.";
                 }
             } catch (error) {
                 status.textContent = "Status: Error - " + error.message;
