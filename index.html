@@ -18,15 +18,15 @@
             --text-light: #6b7280;
             --border: #e5e7eb;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        
-        body { 
+
+        body {
             background-color: var(--background);
             color: var(--text);
             min-height: 100vh;
@@ -35,7 +35,7 @@
             justify-content: center;
             padding: 1rem;
         }
-        
+
         .container {
             max-width: 450px;
             width: 100%;
@@ -45,69 +45,57 @@
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
             position: relative;
             overflow: hidden;
+            text-align: center;
         }
-        
-        h1 { 
+
+        h1 {
             font-size: 1.875rem;
             font-weight: 700;
             color: var(--text);
             margin-bottom: 0.5rem;
-            text-align: center;
         }
-        
-        .logo {
-            font-size: 2.25rem;
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-        
+
         .subheading {
             color: var(--text-light);
             margin-bottom: 2rem;
-            text-align: center;
             font-size: 0.875rem;
         }
-        
-        .hidden-video {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        button { 
-            padding: 0.75rem 1.5rem; 
+
+        button {
+            padding: 0.75rem 1.5rem;
             font-size: 0.875rem;
             font-weight: 500;
-            cursor: pointer; 
+            cursor: pointer;
             background-color: var(--primary);
             color: white;
             border: none;
             border-radius: 0.5rem;
             width: 100%;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
         button:hover {
             background-color: var(--primary-hover);
         }
-        
+
         button:disabled {
             background-color: var(--secondary);
             cursor: not-allowed;
             opacity: 0.7;
         }
-        
+
         .secondary-button {
             background-color: var(--secondary);
             margin-top: 0.75rem;
         }
-        
+
         .secondary-button:hover {
             background-color: var(--secondary-hover);
         }
-        
+
         .status {
             margin: 1.5rem 0;
             padding: 1rem;
@@ -117,33 +105,31 @@
             text-align: center;
             transition: all 0.3s;
         }
-        
+
         .welcome {
             font-size: 1.25rem;
             font-weight: 600;
             color: var(--primary);
-            text-align: center;
             margin: 1.5rem 0;
         }
-        
+
         .face-placeholder {
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            background-color: #e5e7eb;
             margin: 1.5rem auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             position: relative;
             overflow: hidden;
+            border: 2px solid var(--border);
         }
-        
-        .face-icon {
-            font-size: 4rem;
-            color: #9ca3af;
+
+        .face-placeholder video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
-        
+
         .face-scan {
             position: absolute;
             width: 100%;
@@ -152,34 +138,35 @@
             animation: scanning 1.5s linear infinite;
             top: 0;
         }
-        
+
         @keyframes scanning {
             0% { top: 0; }
             100% { top: 100%; }
         }
-        
+
         .face-detected {
-            border: 3px solid var(--success);
+            border-color: var(--success);
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
             70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
-        
+
         .form-group {
             margin-bottom: 1.5rem;
+            text-align: left;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
             font-size: 0.875rem;
         }
-        
+
         .form-group input {
             width: 100%;
             padding: 0.75rem 1rem;
@@ -188,50 +175,34 @@
             font-size: 1rem;
             transition: border-color 0.2s;
         }
-        
+
         .form-group input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
         }
-        
+
         .section-title {
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
-            text-align: center;
         }
-        
+
         .success-message {
             color: var(--success);
             font-weight: 600;
         }
-        
+
         .error-message {
             color: var(--error);
         }
-        
+
         .face-actions {
             display: flex;
             gap: 0.75rem;
             flex-direction: column;
         }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 0.5rem;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
+
         .scan-indicator {
             position: absolute;
             left: 0;
@@ -241,7 +212,7 @@
             font-size: 0.75rem;
             color: var(--text-light);
         }
-        
+
         .scan-indicator span {
             display: inline-block;
             width: 8px;
@@ -251,176 +222,139 @@
             margin-right: 4px;
             animation: blink 1.4s infinite both;
         }
-        
+
         .scan-indicator span:nth-child(2) {
             animation-delay: 0.2s;
         }
-        
+
         .scan-indicator span:nth-child(3) {
             animation-delay: 0.4s;
         }
-        
+
         @keyframes blink {
             0% { opacity: 0.2; }
             20% { opacity: 1; }
             100% { opacity: 0.2; }
         }
+
         .view {
-        display: none;
-        transition: opacity 0.3s ease;
-    }
-    
-    .view.active {
-        display: block;
-        animation: fadeIn 0.3s;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    .face-guide-message {
-        position: absolute;
-        bottom: -40px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        font-size: 0.75rem;
-        color: var(--text-light);
-    }
-    
-    .no-face-message {
-        color: var(--error);
-        font-weight: 500;
-    }
-    
-    .face-placeholder {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        background-color: #e5e7eb;
-        margin: 1.5rem auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    #faceCanvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: none;
-    }
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        .face-guide-message {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .no-face-message {
+            color: var(--error);
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">🔒</div>
         <h1>FaceLock</h1>
         <p class="subheading">The Modern Face Authentication System</p>
-    
+
         <!-- Registration View -->
         <div id="registration-view" class="view active">
             <h2 class="section-title">Register Your Face</h2>
-            
             <div class="face-placeholder" id="face-placeholder">
-                <div class="face-icon">👤</div>
+                <video id="video" autoplay muted></video>
+                <canvas id="overlayCanvas" style="position: absolute; top: 0; left: 0; width: 150px; height: 150px; border-radius: 50%;"></canvas>
                 <div class="face-scan"></div>
                 <div class="scan-indicator">
                     Scanning<span></span><span></span><span></span>
                 </div>
                 <div class="face-guide-message">Please center your face within the circle</div>
             </div>
-            
             <div class="form-group">
                 <label for="user-name">Your Name</label>
                 <input type="text" id="user-name" placeholder="Enter your name">
             </div>
-            
             <div class="face-actions">
-                <button id="register-face-btn" onclick="registerFace()" disabled>Register My Face</button>
+                <button id="register-face-btn" onclick="registerFace()" disabled>
+                    <span class="loading-spinner" id="register-spinner" style="display: none;"></span>Register My Face
+                </button>
                 <button class="secondary-button" onclick="switchView('login-view')">Already Registered? Login</button>
             </div>
         </div>
-    
+
         <!-- Login View -->
         <div id="login-view" class="view">
             <h2 class="section-title">Login with Your Face</h2>
-            
             <div class="face-placeholder" id="login-face-placeholder">
-                <div class="face-icon">👤</div>
+                <video id="video" autoplay muted></video>
+                <canvas id="overlayCanvas" style="position: absolute; top: 0; left: 0; width: 150px; height: 150px; border-radius: 50%;"></canvas>
                 <div class="face-scan"></div>
                 <div class="scan-indicator">
                     Scanning<span></span><span></span><span></span>
                 </div>
                 <div class="face-guide-message">Please center your face within the circle</div>
             </div>
-            
             <div class="face-actions">
-                <button id="login-face-btn" onclick="loginFace()" disabled>Verify My Face</button>
+                <button id="login-face-btn" onclick="loginFace()" disabled>
+                    <span class="loading-spinner" id="login-spinner" style="display: none;"></span>Verify My Face
+                </button>
                 <button class="secondary-button" onclick="switchView('registration-view')">Need to Register? Sign Up</button>
             </div>
         </div>
-    
+
         <!-- Authenticated User View -->
         <div id="authenticated-view" class="view">
             <div class="face-placeholder face-detected">
-                <div class="face-icon">✓</div>
+                <video id="video" autoplay muted></video>
+                <canvas id="overlayCanvas" style="position: absolute; top: 0; left: 0; width: 150px; height: 150px; border-radius: 50%;"></canvas>
             </div>
-            
             <p class="welcome" id="welcome-message">Welcome, User!</p>
-            
             <button class="secondary-button" onclick="logout()">Logout</button>
         </div>
-        
-        <div class="status" id="status">Ready to scan your face</div>
-    
-        <!-- Hidden video element for face detection -->
-        <video id="video" class="hidden-video" autoplay muted></video>
-        <canvas id="faceCanvas" width="150" height="150"></canvas>
-    </div>
-            
-           
-            
-            <p class="welcome" id="welcome-message">Welcome, User!</p>
-            
-            <button class="secondary-button" onclick="logout()">Logout</button>
-        </div>
-        
-        <div class="status" id="status">Ready to scan your face</div>
 
-        <!-- Hidden video element for face detection -->
-        <video id="video" class="hidden-video" autoplay muted></video>
-        <canvas id="faceCanvas" class="hidden-video"></canvas>
+        <div class="status" id="status">Initializing...</div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
-        // Firebase configuration
+        // Load Firebase config from environment variables for Vercel deployment
         const firebaseConfig = {
-            apiKey: "AIzaSyDC0DP0xVxfJhvEBASLCVRppkxnxnYApRs",
-            authDomain: "face-lock-938c8.firebaseapp.com",
-            projectId: "face-lock-938c8",
-            storageBucket: "face-lock-938c8.appspot.com",
-            messagingSenderId: "127248130618",
-            appId: "1:127248130618:web:277ca518b34cb8f4b58b03",
-            measurementId: "G-CPTCY84NNH"
+            apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyDC0DP0xVxfJhvEBASLCVRppkxnxnYApRs",
+            authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "face-lock-938c8.firebaseapp.com",
+            projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "face-lock-938c8",
+            storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "face-lock-938c8.appspot.com",
+            messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "127248130618",
+            appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:127248130618:web:277ca518b34cb8f4b58b03",
+            measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-CPTCY84NNH"
         };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
-        
+
         // Application state
         let currentUser = null;
         let isModelLoaded = false;
@@ -428,45 +362,38 @@
         let faceDescriptorCache = null;
         let lastDetectedFace = null;
         let faceDetectionInterval = null;
+        let videoElement = null;
+        let overlayCanvas = null;
+        let overlayContext = null;
 
         // Initialize the application
         window.onload = function() {
+            videoElement = document.getElementById('video');
+            overlayCanvas = document.getElementById('overlayCanvas');
+            overlayContext = overlayCanvas.getContext('2d');
             startVideo();
             loadModels();
-            
-            // Show registration form by default
-            document.getElementById('registration-form').classList.remove('hidden');
-            document.getElementById('login-form').classList.add('hidden');
-            document.getElementById('authenticated-view').classList.add('hidden');
-            
-            // Try anonymous auth to enable Firestore access
+            switchView('registration-view');
+
             auth.signInAnonymously().catch(error => {
                 console.error("Anonymous auth error:", error);
-                updateStatus("Error initializing: " + error.message, 'error');
+                updateStatus("Error initializing: " + error.message + ". Please verify Firebase config and rules.", 'error');
             });
         };
 
-        // Start video capture but keep it hidden
+        // Start video capture
         function startVideo() {
-            const video = document.getElementById('video');
-            
-            navigator.mediaDevices.getUserMedia({ 
-                video: { 
+            navigator.mediaDevices.getUserMedia({
+                video: {
                     width: { ideal: 640 },
                     height: { ideal: 480 },
                     facingMode: "user"
-                } 
-            })
-            .then(stream => {
-                video.srcObject = stream;
+                }
+            }).then(stream => {
+                videoElement.srcObject = stream;
                 updateStatus("Camera initialized. Looking for your face...");
-                
-                // Start face detection after a short delay to allow camera to initialize
-                setTimeout(() => {
-                    startFaceDetection();
-                }, 1000);
-            })
-            .catch(err => {
+                setTimeout(startFaceDetection, 1000);
+            }).catch(err => {
                 console.error('Webcam error:', err);
                 updateStatus('Error accessing camera: ' + err.message + '. Please ensure your camera is connected and permissions are granted.', 'error');
             });
@@ -474,14 +401,13 @@
 
         // Load face-api.js models
         async function loadModels() {
-            updateStatus('Loading face recognition system...');
+            updateStatus('Loading face recognition system... <span class="loading-spinner"></span>');
             try {
                 await Promise.all([
                     faceapi.nets.tinyFaceDetector.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
                     faceapi.nets.faceLandmark68Net.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
                     faceapi.nets.faceRecognitionNet.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights')
                 ]);
-                
                 isModelLoaded = true;
                 updateStatus('Face recognition system ready');
             } catch (error) {
@@ -491,58 +417,54 @@
         }
 
         // Start continuous face detection
-        // function startFaceDetection() {
-        //     if (isFaceDetectionRunning) return;
-            
-        //     isFaceDetectionRunning = true;
-        //     const video = document.getElementById('video');
-            
-        //     if (faceDetectionInterval) clearInterval(faceDetectionInterval);
-            
-        //     faceDetectionInterval = setInterval(async () => {
-        //         if (isModelLoaded) {
-        //             try {
-        //                 const detections = await faceapi.detectAllFaces(
-        //                     video, 
-        //                     new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
-        //                 ).withFaceLandmarks();
-                        
-        //                 if (detections.length > 0) {
-        //                     lastDetectedFace = detections[0];
-                            
-        //                     // Show face detected visual feedback
-        //                     if (document.getElementById('registration-form').classList.contains('hidden')) {
-        //                         document.getElementById('login-face-placeholder').classList.add('face-detected');
-        //                     } else {
-        //                         document.getElementById('face-placeholder').classList.add('face-detected');
-        //                     }
-                            
-        //                     // Enable registration button if name is entered
-        //                     const nameInput = document.getElementById('user-name');
-        //                     if (nameInput && nameInput.value.trim()) {
-        //                         document.getElementById('register-face-btn').disabled = false;
-        //                     }
-                            
-        //                     // Enable login button when face is detected
-        //                     document.getElementById('login-face-btn').disabled = false;
-        //                 } else {
-        //                     lastDetectedFace = null;
-                            
-        //                     // Remove face detected visual feedback
-        //                     document.getElementById('face-placeholder').classList.remove('face-detected');
-        //                     document.getElementById('login-face-placeholder').classList.remove('face-detected');
-                            
-        //                     // Disable buttons when no face detected
-        //                     document.getElementById('register-face-btn').disabled = true;
-        //                     document.getElementById('login-face-btn').disabled = true;
-        //                 }
-        //             } catch (error) {
-        //                 console.error('Face detection error:', error);
-        //                 // Don't update status for every detection error to avoid UI clutter
-        //             }
-        //         }
-        //     }, 200);
-        // }
+        function startFaceDetection() {
+            if (isFaceDetectionRunning) return;
+
+            isFaceDetectionRunning = true;
+            if (faceDetectionInterval) clearInterval(faceDetectionInterval);
+
+            faceDetectionInterval = setInterval(async () => {
+                if (isModelLoaded && videoElement) {
+                    try {
+                        const detections = await faceapi.detectAllFaces(
+                            videoElement,
+                            new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
+                        ).withFaceLandmarks();
+
+                        const facePlaceholder = document.getElementById(
+                            document.getElementById('registration-view').classList.contains('active') ?
+                            'face-placeholder' : 'login-face-placeholder'
+                        );
+
+                        overlayContext.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                        if (detections.length > 0) {
+                            lastDetectedFace = detections[0];
+                            facePlaceholder.classList.add('face-detected');
+
+                            // Draw detection results
+                            const resizedDetections = faceapi.resizeResults(detections, { width: 150, height: 150 });
+                            faceapi.draw.drawDetections(overlayCanvas, resizedDetections);
+                            faceapi.draw.drawFaceLandmarks(overlayCanvas, resizedDetections);
+
+                            const nameInput = document.getElementById('user-name');
+                            if (nameInput && nameInput.value.trim()) {
+                                document.getElementById('register-face-btn').disabled = false;
+                            }
+                            document.getElementById('login-face-btn').disabled = false;
+                            updateStatus("Face detected! Please stay still...");
+                        } else {
+                            lastDetectedFace = null;
+                            facePlaceholder.classList.remove('face-detected');
+                            document.getElementById('register-face-btn').disabled = true;
+                            document.getElementById('login-face-btn').disabled = true;
+                            updateStatus("No face detected. Please center your face in the circle.");
+                        }
+                    } catch (error) {
+                        console.error('Face detection error:', error);
+                    }
+                }
+            }, 200);
+        }
 
         // Stop face detection
         function stopFaceDetection() {
@@ -556,118 +478,104 @@
         // Register a new face
         async function registerFace() {
             const userName = document.getElementById('user-name').value.trim();
-            
+            const registerSpinner = document.getElementById('register-spinner');
+
             if (!userName) {
                 updateStatus('Please enter your name', 'error');
                 return;
             }
-            
+
             if (!lastDetectedFace) {
                 updateStatus('No face detected. Please look at the camera', 'error');
                 return;
             }
-            
-            updateStatus('Registering your face...');
+
+            updateStatus('Registering your face... <span class="loading-spinner"></span>');
+            registerSpinner.style.display = 'inline-block';
             document.getElementById('register-face-btn').disabled = true;
-            
+
             try {
-                // Get full descriptors for the detected face
                 const fullFaceDescription = await getFaceDescriptors();
-                
                 if (!fullFaceDescription) {
                     updateStatus('Could not process your face. Please try again with better lighting', 'error');
+                    registerSpinner.style.display = 'none';
                     document.getElementById('register-face-btn').disabled = false;
                     return;
                 }
-                
-                // Generate a unique user ID
+
                 const userId = 'user_' + Date.now();
-                
-                // Store the face data in Firestore
                 await db.collection('users').doc(userId).set({
                     name: userName,
                     faceDescriptor: Array.from(fullFaceDescription.descriptor),
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                
-                // Cache the current user
-                currentUser = {
-                    id: userId,
-                    name: userName
-                };
-                
+
+                currentUser = { id: userId, name: userName };
                 updateStatus('Face registered successfully!', 'success');
-                
-                // Show authenticated view
                 showAuthenticatedView(userName);
-                
             } catch (error) {
                 console.error('Face registration error:', error);
                 updateStatus('Error registering face: ' + error.message, 'error');
+                registerSpinner.style.display = 'none';
                 document.getElementById('register-face-btn').disabled = false;
             }
         }
 
         // Login using facial recognition
         async function loginFace() {
+            const loginSpinner = document.getElementById('login-spinner');
+
             if (!lastDetectedFace) {
                 updateStatus('No face detected. Please look at the camera', 'error');
                 return;
             }
-            
-            updateStatus('Verifying your face...');
+
+            updateStatus('Verifying your face... <span class="loading-spinner"></span>');
+            loginSpinner.style.display = 'inline-block';
             document.getElementById('login-face-btn').disabled = true;
-            
+
             try {
-                // Get full descriptors for the detected face
                 const fullFaceDescription = await getFaceDescriptors();
-                
                 if (!fullFaceDescription) {
                     updateStatus('Could not process your face. Please try again with better lighting', 'error');
+                    loginSpinner.style.display = 'none';
                     document.getElementById('login-face-btn').disabled = false;
                     return;
                 }
-                
+
                 const loginDescriptor = fullFaceDescription.descriptor;
-                
-                // Fetch all users with registered faces
                 const userDocs = await db.collection('users').get();
                 let matchedUser = null;
-                let bestMatch = 0.6; // Threshold for face recognition (lower is better)
-                
+                let bestMatch = 0.6;
+
                 userDocs.forEach(doc => {
                     const userData = doc.data();
                     if (userData.faceDescriptor) {
                         const storedDescriptor = userData.faceDescriptor;
                         const distance = faceapi.euclideanDistance(loginDescriptor, storedDescriptor);
-                        
-                        // Find the best match below the threshold
                         if (distance < bestMatch) {
                             bestMatch = distance;
-                            matchedUser = {
-                                id: doc.id,
-                                name: userData.name
-                            };
+                            matchedUser = { id: doc.id, name: userData.name };
                         }
                     }
                 });
-                
+
                 if (matchedUser) {
-                    // Set the current user
                     currentUser = matchedUser;
-                    
-                    // Short delay for better UX
                     setTimeout(() => {
                         updateStatus('Face verified successfully!', 'success');
                         showAuthenticatedView(matchedUser.name);
+                        loginSpinner.style.display = 'none';
                     }, 1000);
                 } else {
                     updateStatus('Face not recognized. Please register first.', 'error');
+                    loginSpinner.style.display = 'none';
                     document.getElementById('login-face-btn').disabled = false;
                 }
             } catch (error) {
                 console.error('Face verification error:', error);
                 updateStatus('Error during face verification: ' + error.message, 'error');
+                loginSpinner.style.display = 'none';
                 document.getElementById('login-face-btn').disabled = false;
             }
         }
@@ -675,13 +583,10 @@
         // Get face descriptors from the video
         async function getFaceDescriptors() {
             try {
-                const video = document.getElementById('video');
-                
                 const detections = await faceapi.detectSingleFace(
-                    video, 
+                    videoElement,
                     new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.7 })
                 ).withFaceLandmarks().withFaceDescriptor();
-                
                 return detections || null;
             } catch (error) {
                 console.error('Error getting face descriptors:', error);
@@ -689,75 +594,44 @@
             }
         }
 
-        // Switch to login view
-       
+        // Switch between views
+        function switchView(viewId) {
+            const views = document.querySelectorAll('.view');
+            views.forEach(view => view.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
 
-        
+            if (viewId === 'registration-view') {
+                updateStatus('Please enter your name and look at the camera');
+            } else if (viewId === 'login-view') {
+                updateStatus('Please look at the camera to verify your face');
+            } else if (viewId === 'authenticated-view') {
+                updateStatus('You are now authenticated!', 'success');
+            }
+
+            startFaceDetection();
+        }
+
+        // Show authenticated view
+        function showAuthenticatedView(userName) {
+            document.getElementById('welcome-message').textContent = `Welcome, ${userName}!`;
+            switchView('authenticated-view');
+        }
+
         // Logout
-        // Replace the existing switchToLogin and switchToRegister functions with this unified function
-function switchView(viewId) {
-    // Hide all views
-    const views = document.querySelectorAll('.view');
-    views.forEach(view => {
-        view.classList.remove('active');
-    });
-    
-    // Show the requested view
-    document.getElementById(viewId).classList.add('active');
-    
-    // Update status based on view
-    if (viewId === 'registration-view') {
-        updateStatus('Please enter your name and look at the camera');
-    } else if (viewId === 'login-view') {
-        updateStatus('Please look at the camera to verify your face');
-    } else if (viewId === 'authenticated-view') {
-        updateStatus('You are now authenticated!', 'success');
-    }
-    
-    // Ensure face detection is running
-    startFaceDetection();
-}
+        function logout() {
+            currentUser = null;
+            document.getElementById('welcome-message').textContent = '';
+            document.getElementById('login-face-btn').disabled = true;
+            switchView('login-view');
+            updateStatus('Logged out successfully. Ready to authenticate again.');
+        }
 
-// Update the showAuthenticatedView function
-function showAuthenticatedView(userName) {
-    document.getElementById('welcome-message').textContent = `Welcome, ${userName}!`;
-    switchView('authenticated-view');
-}
-
-// Update the logout function
-function logout() {
-    currentUser = null;
-    document.getElementById('welcome-message').textContent = '';
-    
-    // Reset buttons
-    document.getElementById('login-face-btn').disabled = true;
-    
-    switchView('login-view');
-    updateStatus('Logged out successfully. Ready to authenticate again.');
-}
-
-// Update the window.onload function
-window.onload = function() {
-    startVideo();
-    loadModels();
-    
-    // Initialize the first view
-    switchView('registration-view');
-    
-    // Try anonymous auth to enable Firestore access
-    auth.signInAnonymously().catch(error => {
-        console.error("Anonymous auth error:", error);
-        updateStatus("Error initializing: " + error.message, 'error');
-    });
-};
-        // Update status message with styling
+        // Update status message
         function updateStatus(message, type = 'info') {
             const statusElement = document.getElementById('status');
-            statusElement.textContent = message;
-            
-            // Reset classes
+            statusElement.innerHTML = message.replace('<span class="loading-spinner"></span>', '<span class="loading-spinner"></span>');
             statusElement.classList.remove('success-message', 'error-message');
-                        if (type === 'error') {
+            if (type === 'error') {
                 statusElement.classList.add('error-message');
                 statusElement.style.backgroundColor = '#fef2f2';
             } else if (type === 'success') {
@@ -766,137 +640,8 @@ window.onload = function() {
             } else {
                 statusElement.style.backgroundColor = '#f3f4f6';
             }
-            
             console.log(`Status (${type}):`, message);
         }
-
-
-
-        // Update this function in your script
-function startFaceDetection() {
-    if (isFaceDetectionRunning) return;
-    
-    isFaceDetectionRunning = true;
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('faceCanvas');
-    const context = canvas.getContext('2d');
-    
-    // Make canvas same size as video
-    canvas.width = 150;
-    canvas.height = 150;
-    
-    if (faceDetectionInterval) clearInterval(faceDetectionInterval);
-    
-    faceDetectionInterval = setInterval(async () => {
-        if (isModelLoaded) {
-            try {
-                const detections = await faceapi.detectAllFaces(
-                    video, 
-                    new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
-                ).withFaceLandmarks();
-                
-                // Clear previous drawings
-                context.clearRect(0, 0, canvas.width, canvas.height);
-                
-                if (detections.length > 0) {
-                    lastDetectedFace = detections[0];
-                    
-                    // Show the actual face in the placeholder
-                    updateFacePlaceholder(true, video);
-                    
-                    // Draw guide overlay on the face
-                    drawFaceGuide(context, canvas.width, canvas.height);
-                    
-                    // Enable buttons when face is detected
-                    const nameInput = document.getElementById('user-name');
-                    if (nameInput && nameInput.value.trim()) {
-                        document.getElementById('register-face-btn').disabled = false;
-                    }
-                    document.getElementById('login-face-btn').disabled = false;
-                    
-                    updateStatus("Face detected! Please stay still...");
-                } else {
-                    lastDetectedFace = null;
-                    
-                    // Show "No face detected" message and guide
-                    updateFacePlaceholder(false);
-                    
-                    // Draw face guide outline
-                    drawFaceGuide(context, canvas.width, canvas.height, true);
-                    
-                    // Disable buttons when no face detected
-                    document.getElementById('register-face-btn').disabled = true;
-                    document.getElementById('login-face-btn').disabled = true;
-                    
-                    updateStatus("No face detected. Please center your face in the circle.");
-                }
-            } catch (error) {
-                console.error('Face detection error:', error);
-                // Don't update status for every detection error to avoid UI clutter
-            }
-        }
-    }, 200);
-}
-
-// Add this new function to draw guide overlay
-function drawFaceGuide(context, width, height, noFace = false) {
-    // Draw circle face guide
-    context.strokeStyle = noFace ? '#ef4444' : '#10b981';
-    context.lineWidth = 3;
-    context.beginPath();
-    context.arc(width/2, height/2, width/2 - 10, 0, 2 * Math.PI);
-    context.stroke();
-    
-    if (noFace) {
-        // Draw a silhouette when no face is detected
-        context.fillStyle = 'rgba(107, 114, 128, 0.2)';
-        context.beginPath();
-        context.arc(width/2, height/2 - 15, 25, 0, 2 * Math.PI); // Head
-        context.fill();
-        
-        context.beginPath();
-        context.arc(width/2, height/2 + 30, 35, Math.PI, 2 * Math.PI); // Body
-        context.fill();
-    }
-}
-
-// Add this function to update the face placeholder
-function updateFacePlaceholder(faceDetected, videoElement = null) {
-    const registrationPlaceholder = document.getElementById('face-placeholder');
-    const loginPlaceholder = document.getElementById('login-face-placeholder');
-    const canvas = document.getElementById('faceCanvas');
-    
-    const activePlaceholder = document.getElementById('registration-form').classList.contains('hidden') 
-        ? loginPlaceholder 
-        : registrationPlaceholder;
-    
-    // Update placeholder classes based on face detection
-    if (faceDetected) {
-        activePlaceholder.classList.add('face-detected');
-        
-        // If we have a video element, show it in the placeholder
-        if (videoElement) {
-            // Hide the icon
-            const faceIcon = activePlaceholder.querySelector('.face-icon');
-            if (faceIcon) faceIcon.style.display = 'none';
-            
-            // Show the canvas with face
-            canvas.style.display = 'block';
-            canvas.style.borderRadius = '50%';
-            activePlaceholder.appendChild(canvas);
-        }
-    } else {
-        registrationPlaceholder.classList.remove('face-detected');
-        loginPlaceholder.classList.remove('face-detected');
-        
-        // Show icon and hide video/canvas
-        const faceIcons = document.querySelectorAll('.face-icon');
-        faceIcons.forEach(icon => icon.style.display = 'block');
-        
-        canvas.style.display = 'block';
-        activePlaceholder.appendChild(canvas);
-    }
-}
     </script>
 </body>
 </html>
