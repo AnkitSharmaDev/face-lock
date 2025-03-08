@@ -152,7 +152,7 @@
 
 
 <!-- Major updation -->
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -213,6 +213,43 @@
         }
         .secondary-button:hover {
             background-color: #616161;
+        }
+        .google-button {
+            background-color: white;
+            color: #757575;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            width: 220px;
+        }
+        .google-button img {
+            margin-right: 10px;
+        }
+        .google-button:hover {
+            background-color: #f5f5f5;
+        }
+        .auth-divider {
+            margin: 20px 0;
+            position: relative;
+            text-align: center;
+        }
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #ddd;
+            z-index: 1;
+        }
+        .auth-divider span {
+            background-color: #f9f9f9;
+            padding: 0 10px;
+            position: relative;
+            z-index: 2;
         }
         #status {
             margin: 20px 0;
@@ -277,9 +314,17 @@
 
         <!-- Authentication Forms -->
         <div id="auth-forms" class="auth-container">
+            <!-- Google Sign-in -->
+            <button class="google-button" onclick="loginWithGoogle()">
+                <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" width="18" height="18">
+                Sign in with Google
+            </button>
+
+            <div class="auth-divider"><span>or</span></div>
+
             <!-- Login Form -->
             <div id="login-form">
-                <h2>Login</h2>
+                <h2>Login with Email</h2>
                 <div class="form-group">
                     <label for="login-email">Email</label>
                     <input type="email" id="login-email" placeholder="your@email.com">
@@ -377,6 +422,21 @@
             document.getElementById('signup-form').classList.toggle('hidden');
         }
 
+        // Login with Google
+        function loginWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            
+            updateStatus('Connecting to Google...');
+            
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    updateStatus('Logged in with Google successfully!');
+                })
+                .catch((error) => {
+                    updateStatus('Error: ' + error.message, 'error');
+                });
+        }
+
         // Create a new user
         function createUser() {
             const name = document.getElementById('signup-name').value;
@@ -387,6 +447,8 @@
                 updateStatus('Please enter both email and password', 'error');
                 return;
             }
+
+            updateStatus('Creating account...');
 
             auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
@@ -412,6 +474,8 @@
                 return;
             }
 
+            updateStatus('Logging in...');
+
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
                     updateStatus('Logged in successfully!');
@@ -423,6 +487,8 @@
 
         // Logout user
         function logout() {
+            updateStatus('Logging out...');
+            
             auth.signOut()
                 .then(() => {
                     updateStatus('Logged out successfully!');
@@ -438,9 +504,13 @@
                 const userDoc = await db.collection('users').doc(currentUser.uid).get();
                 if (userDoc.exists && userDoc.data().faceDescriptor) {
                     document.getElementById('register-face-btn').textContent = 'Update Face Data';
+                    updateStatus('Face data found. You can login with face or update your face data.');
+                } else {
+                    updateStatus('No face data found. Please register your face.');
                 }
             } catch (error) {
                 console.error('Error checking face registration:', error);
+                updateStatus('Error checking face data: ' + error.message, 'error');
             }
         }
 
