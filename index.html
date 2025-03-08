@@ -1,157 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FaceLock</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        video { border: 2px solid #ccc; margin: 20px; border-radius: 20px 20px; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <h1>FaceLock Login</h1>
-    <video id="video" width="400" height="300" autoplay></video>
-    <br>
-    <button onclick="registerFace()">Register Face</button>
-    <button onclick="loginFace()">Login with Face</button>
-    <p id="status">Status: Ready</p>
-
-    <script type="module">
-        import firebaseConfig from './config.js';
-        firebase.initializeApp(firebaseConfig);
-    </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    
-    
-    
-
-    <script>
-        const firebaseConfig = {
-    apiKey: "AIzaSyDC0DP0xVxfJhvEBASLCVRppkxnxnYApRs",
-    authDomain: "face-lock-938c8.firebaseapp.com",
-    projectId: "face-lock-938c8",
-    storageBucket: "face-lock-938c8.firebasestorage.app",
-    messagingSenderId: "127248130618",
-    appId: "1:127248130618:web:277ca518b34cb8f4b58b03",
-    measurementId: "G-CPTCY84NNH"
-  };
-
-       
- 
-         
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-
-         
-        window.onload = function() {
-            startVideo();
-            loadModels();  
-        };
-
-         
-        function startVideo() {
-            const video = document.getElementById('video');
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                    console.log('Webcam started successfully');
-                })
-                .catch(err => console.error('Webcam error:', err));
-        }
-
-         
-        async function loadModels() {
-            try {
-                await Promise.all([
-                    faceapi.nets.tinyFaceDetector.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
-                    faceapi.nets.faceLandmark68Net.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
-                    faceapi.nets.faceRecognitionNet.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights')
-                ]);
-                
-                document.getElementById('status').textContent = "Status: Models loaded, ready to use";
-            } catch (err) {
-               
-                document.getElementById('status').textContent = "Status: Failed to load models(Check your Internet connection)";
-            }
-        }
-
-         
-        async function registerFace() {
-            const video = document.getElementById('video');
-            const status = document.getElementById('status');
-            status.textContent = "Status: Detecting face...";
-
-            try {
-                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
-                    .withFaceLandmarks()
-                    .withFaceDescriptor();
-
-                if (detections) {
-                    const descriptor = Array.from(detections.descriptor);   
-                    await db.collection('users').doc('test-user').set({ faceDescriptor: descriptor });
-                    status.textContent = "Status: Face registered!";
-                } else {
-                    status.textContent = "Status: No face detected.";
-                }
-            } catch (error) {
-                console.error('Register error:', error);
-                status.textContent = "Status: Error occurred - " + error.message;
-            }
-        }
-
-        
-        async function loginFace() {
-            const video = document.getElementById('video');
-            const status = document.getElementById('status');
-            status.textContent = "Status: Verifying face...";
-
-            try {
-                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
-                    .withFaceLandmarks()
-                    .withFaceDescriptor();
-
-                if (detections) {
-                    const newDescriptor = Array.from(detections.descriptor);
-                    const doc = await db.collection('users').doc('test-user').get();
-                    if (!doc.exists) {
-                        status.textContent = "Status: No user registered yet.";
-                        return;
-                    }
-                    const storedDescriptor = doc.data().faceDescriptor;
-
-                    
-                    const distance = faceapi.euclideanDistance(newDescriptor, storedDescriptor);
-                    if (distance < 0.6) {  
-                        status.textContent = "Status: Login successful!";
-                    } else {
-                        status.textContent = "Status: Face not recognized.";
-                    }
-                } else {
-                    status.textContent = "Status: No face detected.";
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                status.textContent = "Status: Error occurred - " + error.message;
-            }
-        }
-    </script>
-</body>
-</html> -->
-
-
-
-
-
-
-<!-- Major updation -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -381,12 +227,12 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
-        // Firebase configuration
+        // Firebase configuration - Fixed storageBucket format
         const firebaseConfig = {
             apiKey: "AIzaSyDC0DP0xVxfJhvEBASLCVRppkxnxnYApRs",
             authDomain: "face-lock-938c8.firebaseapp.com",
             projectId: "face-lock-938c8",
-            storageBucket: "face-lock-938c8.firebasestorage.app",
+            storageBucket: "face-lock-938c8.appspot.com", // Fixed from .firebasestorage.app
             messagingSenderId: "127248130618",
             appId: "1:127248130618:web:277ca518b34cb8f4b58b03",
             measurementId: "G-CPTCY84NNH"
@@ -398,6 +244,22 @@
         const auth = firebase.auth();
         let currentUser = null;
         let faceDetectionInterval = null;
+
+        // Handle Google redirect result
+        window.onload = function() {
+            startVideo();
+            loadModels();
+            
+            // Handle Google redirect results
+            auth.getRedirectResult().then((result) => {
+                if (result.user) {
+                    updateStatus('Logged in with Google successfully!');
+                }
+            }).catch((error) => {
+                console.error('Google redirect error:', error);
+                updateStatus('Error with Google login: ' + error.message, 'error');
+            });
+        };
 
         // Auth state listener
         auth.onAuthStateChanged(user => {
@@ -422,29 +284,42 @@
             document.getElementById('signup-form').classList.toggle('hidden');
         }
 
-        // Login with Google
+        // Login with Google - Changed to use redirect for better compatibility
         function loginWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             
             updateStatus('Connecting to Google...');
             
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    updateStatus('Logged in with Google successfully!');
-                })
-                .catch((error) => {
-                    updateStatus('Error: ' + error.message, 'error');
-                });
+            // Use signInWithRedirect instead of signInWithPopup for better browser compatibility
+            auth.signInWithRedirect(provider).catch((error) => {
+                console.error('Google redirect initiation error:', error);
+                updateStatus('Error: ' + error.message, 'error');
+            });
         }
 
-        // Create a new user
+        // Create a new user with improved error handling
         function createUser() {
             const name = document.getElementById('signup-name').value;
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             
-            if (!email || !password) {
-                updateStatus('Please enter both email and password', 'error');
+            if (!name) {
+                updateStatus('Please enter your name', 'error');
+                return;
+            }
+            
+            if (!email) {
+                updateStatus('Please enter your email', 'error');
+                return;
+            }
+            
+            if (!password) {
+                updateStatus('Please enter a password', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                updateStatus('Password must be at least 6 characters', 'error');
                 return;
             }
 
@@ -452,6 +327,7 @@
 
             auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
+                    // Update the user profile with the name
                     return userCredential.user.updateProfile({
                         displayName: name
                     });
@@ -460,17 +336,23 @@
                     updateStatus('Account created successfully!');
                 })
                 .catch(error => {
-                    updateStatus('Error: ' + error.message, 'error');
+                    console.error('Signup error:', error);
+                    updateStatus('Error: ' + error.message + ' (Code: ' + error.code + ')', 'error');
                 });
         }
 
-        // Login with email and password
+        // Login with email and password with improved validation
         function loginUser() {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             
-            if (!email || !password) {
-                updateStatus('Please enter both email and password', 'error');
+            if (!email) {
+                updateStatus('Please enter your email', 'error');
+                return;
+            }
+            
+            if (!password) {
+                updateStatus('Please enter your password', 'error');
                 return;
             }
 
@@ -481,6 +363,7 @@
                     updateStatus('Logged in successfully!');
                 })
                 .catch(error => {
+                    console.error('Login error:', error);
                     updateStatus('Error: ' + error.message, 'error');
                 });
         }
@@ -489,11 +372,18 @@
         function logout() {
             updateStatus('Logging out...');
             
+            // Clear face detection interval before logging out
+            if (faceDetectionInterval) {
+                clearInterval(faceDetectionInterval);
+                faceDetectionInterval = null;
+            }
+            
             auth.signOut()
                 .then(() => {
                     updateStatus('Logged out successfully!');
                 })
                 .catch(error => {
+                    console.error('Logout error:', error);
                     updateStatus('Error logging out: ' + error.message, 'error');
                 });
         }
@@ -514,23 +404,24 @@
             }
         }
 
-        // Initialize video and face detection
-        window.onload = function() {
-            startVideo();
-            loadModels();
-        };
-
         function startVideo() {
             const video = document.getElementById('video');
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                    startFaceDetection();
-                })
-                .catch(err => {
-                    console.error('Webcam error:', err);
-                    updateStatus('Error accessing webcam: ' + err.message, 'error');
-                });
+            // Try accessing webcam with fallback options
+            navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 400 },
+                    height: { ideal: 300 },
+                    facingMode: "user"
+                } 
+            })
+            .then(stream => {
+                video.srcObject = stream;
+                startFaceDetection();
+            })
+            .catch(err => {
+                console.error('Webcam error:', err);
+                updateStatus('Error accessing webcam: ' + err.message + '. Please ensure your camera is connected and permissions are granted.', 'error');
+            });
         }
 
         async function loadModels() {
@@ -543,11 +434,12 @@
                 ]);
                 updateStatus('Face recognition models loaded and ready');
             } catch (error) {
-                updateStatus('Error loading models: ' + error.message, 'error');
+                console.error('Model loading error:', error);
+                updateStatus('Error loading models: ' + error.message + '. Please check your internet connection.', 'error');
             }
         }
 
-        // Live face detection with overlay
+        // Live face detection with overlay - optimized
         function startFaceDetection() {
             const video = document.getElementById('video');
             const canvas = document.getElementById('overlay');
@@ -557,29 +449,34 @@
             
             faceDetectionInterval = setInterval(async () => {
                 if (faceapi.nets.tinyFaceDetector.isLoaded) {
-                    const detections = await faceapi.detectAllFaces(
-                        video, 
-                        new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
-                    ).withFaceLandmarks();
-                    
-                    // Clear previous overlay
-                    context.clearRect(0, 0, canvas.width, canvas.height);
-                    
-                    if (detections.length > 0) {
-                        detections.forEach(detection => {
-                            // Draw face box
-                            const box = detection.detection.box;
-                            context.strokeStyle = '#4285f4';
-                            context.lineWidth = 2;
-                            context.strokeRect(box.x, box.y, box.width, box.height);
-                            
-                            // Add label
-                            context.fillStyle = '#4285f4';
-                            context.fillRect(box.x, box.y - 25, 60, 25);
-                            context.fillStyle = 'white';
-                            context.font = '16px Arial';
-                            context.fillText('Face', box.x + 5, box.y - 7);
-                        });
+                    try {
+                        const detections = await faceapi.detectAllFaces(
+                            video, 
+                            new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
+                        ).withFaceLandmarks();
+                        
+                        // Clear previous overlay
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+                        
+                        if (detections.length > 0) {
+                            detections.forEach(detection => {
+                                // Draw face box
+                                const box = detection.detection.box;
+                                context.strokeStyle = '#4285f4';
+                                context.lineWidth = 2;
+                                context.strokeRect(box.x, box.y, box.width, box.height);
+                                
+                                // Add label
+                                context.fillStyle = '#4285f4';
+                                context.fillRect(box.x, box.y - 25, 60, 25);
+                                context.fillStyle = 'white';
+                                context.font = '16px Arial';
+                                context.fillText('Face', box.x + 5, box.y - 7);
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Face detection error:', error);
+                        // Don't update status for every detection error to avoid UI clutter
                     }
                 }
             }, 100);
@@ -621,6 +518,7 @@
                 updateStatus('Face registered successfully!');
                 document.getElementById('register-face-btn').textContent = 'Update Face Data';
             } catch (error) {
+                console.error('Face registration error:', error);
                 updateStatus('Error registering face: ' + error.message, 'error');
             }
         }
@@ -689,6 +587,7 @@
                     updateStatus('Face not recognized. Please register first or try again.', 'error');
                 }
             } catch (error) {
+                console.error('Face verification error:', error);
                 updateStatus('Error during face verification: ' + error.message, 'error');
             }
         }
@@ -705,6 +604,9 @@
                 statusElement.style.backgroundColor = '#f0f0f0';
                 statusElement.style.color = '#333';
             }
+            
+            // Log all status messages to console for debugging
+            console.log(`Status (${type}):`, message);
         }
     </script>
 </body>
