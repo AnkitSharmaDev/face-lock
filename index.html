@@ -152,26 +152,183 @@
 
 
 <!-- Major updation -->
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FaceLock</title>
+    <title>FaceLock - Secure Face Authentication</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        video { border: 2px solid #ccc; margin: 20px; border-radius: 20px 20px; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #3a3a3a;
+            margin-bottom: 5px;
+        }
+        .subheading {
+            color: #666;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        video { 
+            border: 2px solid #ccc; 
+            margin: 20px auto; 
+            border-radius: 10px; 
+            display: block;
+            background-color: #eee;
+        }
+        button { 
+            padding: 12px 24px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .secondary-button {
+            background-color: #757575;
+        }
+        .secondary-button:hover {
+            background-color: #616161;
+        }
+        #status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+        }
+        #welcome {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4285f4;
+        }
+        .auth-container {
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            max-width: 400px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .auth-toggle {
+            margin-top: 10px;
+            color: #4285f4;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+        .face-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .video-container {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
-    <h1>FaceLock Login</h1>
-    <video id="video" width="400" height="300" autoplay></video>
-    <br>
-    <button onclick="registerFace()">Register Face</button>
-    <button onclick="loginFace()">Login with Face</button>
-    <p id="status">Status: Ready</p>
-    <p id="welcome"></p>
+    <div class="container">
+        <h1>FaceLock</h1>
+        <p class="subheading">Secure Authentication with Facial Recognition</p>
+
+        <!-- Authentication Forms -->
+        <div id="auth-forms" class="auth-container">
+            <!-- Login Form -->
+            <div id="login-form">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Your password">
+                </div>
+                <button onclick="loginUser()">Login</button>
+                <p class="auth-toggle" onclick="toggleAuthForms()">Need an account? Sign up</p>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form" class="hidden">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <label for="signup-name">Name</label>
+                    <input type="text" id="signup-name" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Choose a password">
+                </div>
+                <button onclick="createUser()">Sign Up</button>
+                <p class="auth-toggle" onclick="toggleAuthForms()">Already have an account? Login</p>
+            </div>
+        </div>
+
+        <!-- Face Authentication Section -->
+        <div id="face-auth-section" class="hidden">
+            <div class="video-container">
+                <video id="video" width="400" height="300" autoplay></video>
+                <canvas id="overlay" class="face-canvas" width="400" height="300"></canvas>
+            </div>
+
+            <div>
+                <button id="register-face-btn" onclick="registerFace()" disabled>Register Face</button>
+                <button id="login-face-btn" onclick="loginFace()">Login with Face</button>
+                <button class="secondary-button" onclick="logout()">Logout</button>
+            </div>
+            
+            <div id="status">Status: Loading face recognition models...</div>
+            <p id="welcome"></p>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -179,6 +336,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDC0DP0xVxfJhvEBASLCVRppkxnxnYApRs",
             authDomain: "face-lock-938c8.firebaseapp.com",
@@ -189,13 +347,107 @@
             measurementId: "G-CPTCY84NNH"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
+        let currentUser = null;
+        let faceDetectionInterval = null;
 
+        // Auth state listener
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('auth-forms').classList.add('hidden');
+                document.getElementById('face-auth-section').classList.remove('hidden');
+                document.getElementById('register-face-btn').disabled = false;
+                document.getElementById('welcome').textContent = `Welcome, ${user.displayName || user.email}!`;
+                checkIfFaceRegistered();
+            } else {
+                currentUser = null;
+                document.getElementById('auth-forms').classList.remove('hidden');
+                document.getElementById('face-auth-section').classList.add('hidden');
+                document.getElementById('welcome').textContent = '';
+            }
+        });
+
+        // Toggle between login and signup forms
+        function toggleAuthForms() {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('signup-form').classList.toggle('hidden');
+        }
+
+        // Create a new user
+        function createUser() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            
+            if (!email || !password) {
+                updateStatus('Please enter both email and password', 'error');
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    return userCredential.user.updateProfile({
+                        displayName: name
+                    });
+                })
+                .then(() => {
+                    updateStatus('Account created successfully!');
+                })
+                .catch(error => {
+                    updateStatus('Error: ' + error.message, 'error');
+                });
+        }
+
+        // Login with email and password
+        function loginUser() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                updateStatus('Please enter both email and password', 'error');
+                return;
+            }
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    updateStatus('Logged in successfully!');
+                })
+                .catch(error => {
+                    updateStatus('Error: ' + error.message, 'error');
+                });
+        }
+
+        // Logout user
+        function logout() {
+            auth.signOut()
+                .then(() => {
+                    updateStatus('Logged out successfully!');
+                })
+                .catch(error => {
+                    updateStatus('Error logging out: ' + error.message, 'error');
+                });
+        }
+
+        // Check if the current user has a registered face
+        async function checkIfFaceRegistered() {
+            try {
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                if (userDoc.exists && userDoc.data().faceDescriptor) {
+                    document.getElementById('register-face-btn').textContent = 'Update Face Data';
+                }
+            } catch (error) {
+                console.error('Error checking face registration:', error);
+            }
+        }
+
+        // Initialize video and face detection
         window.onload = function() {
             startVideo();
-            loadModels();  
+            loadModels();
         };
 
         function startVideo() {
@@ -203,87 +455,185 @@
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(stream => {
                     video.srcObject = stream;
+                    startFaceDetection();
                 })
-                .catch(err => console.error('Webcam error:', err));
+                .catch(err => {
+                    console.error('Webcam error:', err);
+                    updateStatus('Error accessing webcam: ' + err.message, 'error');
+                });
         }
 
         async function loadModels() {
-            await Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
-                faceapi.nets.faceLandmark68Net.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
-                faceapi.nets.faceRecognitionNet.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights')
-            ]);
-            document.getElementById('status').textContent = "Status: Models loaded, ready to use";
+            updateStatus('Loading face recognition models...');
+            try {
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
+                    faceapi.nets.faceLandmark68Net.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
+                    faceapi.nets.faceRecognitionNet.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights')
+                ]);
+                updateStatus('Face recognition models loaded and ready');
+            } catch (error) {
+                updateStatus('Error loading models: ' + error.message, 'error');
+            }
         }
 
+        // Live face detection with overlay
+        function startFaceDetection() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('overlay');
+            const context = canvas.getContext('2d');
+            
+            if (faceDetectionInterval) clearInterval(faceDetectionInterval);
+            
+            faceDetectionInterval = setInterval(async () => {
+                if (faceapi.nets.tinyFaceDetector.isLoaded) {
+                    const detections = await faceapi.detectAllFaces(
+                        video, 
+                        new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 })
+                    ).withFaceLandmarks();
+                    
+                    // Clear previous overlay
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    if (detections.length > 0) {
+                        detections.forEach(detection => {
+                            // Draw face box
+                            const box = detection.detection.box;
+                            context.strokeStyle = '#4285f4';
+                            context.lineWidth = 2;
+                            context.strokeRect(box.x, box.y, box.width, box.height);
+                            
+                            // Add label
+                            context.fillStyle = '#4285f4';
+                            context.fillRect(box.x, box.y - 25, 60, 25);
+                            context.fillStyle = 'white';
+                            context.font = '16px Arial';
+                            context.fillText('Face', box.x + 5, box.y - 7);
+                        });
+                    }
+                }
+            }, 100);
+        }
+
+        // Register face for current user
         async function registerFace() {
-            const user = auth.currentUser;
-            if (!user) {
-                alert("Please sign in first");
+            if (!currentUser) {
+                updateStatus('Please login first', 'error');
                 return;
             }
 
             const video = document.getElementById('video');
-            const status = document.getElementById('status');
-            status.textContent = "Status: Detecting face...";
+            updateStatus('Detecting face for registration...');
 
             try {
-                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
-                    .withFaceLandmarks()
-                    .withFaceDescriptors();
+                const detections = await faceapi.detectAllFaces(
+                    video, 
+                    new faceapi.TinyFaceDetectorOptions()
+                ).withFaceLandmarks().withFaceDescriptors();
                 
-                if (detections.length !== 1) {
-                    status.textContent = "Status: Please ensure only one face is visible";
+                if (detections.length === 0) {
+                    updateStatus('No face detected. Please look at the camera', 'error');
+                    return;
+                }
+                
+                if (detections.length > 1) {
+                    updateStatus('Multiple faces detected. Please ensure only one face is visible', 'error');
                     return;
                 }
                 
                 const descriptor = Array.from(detections[0].descriptor);
-                await db.collection('users').doc(user.uid).set({
-                    name: user.displayName || "User",
-                    faceDescriptor: descriptor
-                });
-                status.textContent = "Status: Face registered!";
+                await db.collection('users').doc(currentUser.uid).set({
+                    name: currentUser.displayName || currentUser.email,
+                    faceDescriptor: descriptor,
+                    lastUpdated: new Date().toISOString()
+                }, { merge: true });
+                
+                updateStatus('Face registered successfully!');
+                document.getElementById('register-face-btn').textContent = 'Update Face Data';
             } catch (error) {
-                status.textContent = "Status: Error - " + error.message;
+                updateStatus('Error registering face: ' + error.message, 'error');
             }
         }
 
+        // Login using facial recognition
         async function loginFace() {
             const video = document.getElementById('video');
-            const status = document.getElementById('status');
-            status.textContent = "Status: Verifying face...";
+            updateStatus('Verifying face...');
 
             try {
-                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
-                    .withFaceLandmarks()
-                    .withFaceDescriptors();
+                const detections = await faceapi.detectAllFaces(
+                    video, 
+                    new faceapi.TinyFaceDetectorOptions()
+                ).withFaceLandmarks().withFaceDescriptors();
 
-                if (detections.length !== 1) {
-                    status.textContent = "Status: Please ensure only one face is visible";
+                if (detections.length === 0) {
+                    updateStatus('No face detected. Please look at the camera', 'error');
+                    return;
+                }
+                
+                if (detections.length > 1) {
+                    updateStatus('Multiple faces detected. Please ensure only one face is visible', 'error');
                     return;
                 }
 
                 const newDescriptor = Array.from(detections[0].descriptor);
                 
+                // Fetch all users with registered faces
                 const userDocs = await db.collection('users').get();
                 let matchedUser = null;
+                let bestMatch = 1.0; // Lower is better, 0.6 is the threshold
 
                 userDocs.forEach(doc => {
-                    const storedDescriptor = doc.data().faceDescriptor;
-                    const distance = faceapi.euclideanDistance(newDescriptor, storedDescriptor);
-                    if (distance < 0.6) {
-                        matchedUser = doc.data().name;
+                    const userData = doc.data();
+                    if (userData.faceDescriptor) {
+                        const storedDescriptor = userData.faceDescriptor;
+                        const distance = faceapi.euclideanDistance(newDescriptor, storedDescriptor);
+                        
+                        // Track the best match
+                        if (distance < 0.6 && distance < bestMatch) {
+                            bestMatch = distance;
+                            matchedUser = {
+                                id: doc.id,
+                                name: userData.name
+                            };
+                        }
                     }
                 });
 
                 if (matchedUser) {
-                    status.textContent = "Status: Login successful!";
-                    document.getElementById('welcome').textContent = "Welcome, " + matchedUser + "!";
+                    // If user is already logged in and matches current user, show confirmation
+                    if (currentUser && matchedUser.id === currentUser.uid) {
+                        updateStatus('Face verified successfully!');
+                        document.getElementById('welcome').textContent = `Welcome back, ${matchedUser.name}!`;
+                        return;
+                    }
+                    
+                    // Otherwise, attempt to login as the matched user
+                    updateStatus(`Face recognized as ${matchedUser.name}! Attempting to sign in...`);
+                    
+                    // In a real app, you would have additional security here
+                    // For this demo, we'll just display the recognized user
+                    document.getElementById('welcome').textContent = `Face recognized: ${matchedUser.name}`;
+                    updateStatus('Face login successful! (Note: In a real app, this would require additional security)');
                 } else {
-                    status.textContent = "Status: Face not recognized.";
+                    updateStatus('Face not recognized. Please register first or try again.', 'error');
                 }
             } catch (error) {
-                status.textContent = "Status: Error - " + error.message;
+                updateStatus('Error during face verification: ' + error.message, 'error');
+            }
+        }
+
+        // Update status message with optional error styling
+        function updateStatus(message, type = 'info') {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            
+            if (type === 'error') {
+                statusElement.style.backgroundColor = '#ffebee';
+                statusElement.style.color = '#c62828';
+            } else {
+                statusElement.style.backgroundColor = '#f0f0f0';
+                statusElement.style.color = '#333';
             }
         }
     </script>
